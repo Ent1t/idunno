@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/loan_provider.dart';
+import 'add_member_dialog.dart';
+import 'record_payment_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -14,7 +16,12 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {},
+            onPressed: () {
+              // TODO: Implement settings screen
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Settings coming soon!')),
+              );
+            },
           ),
         ],
       ),
@@ -96,7 +103,12 @@ class HomeScreen extends StatelessWidget {
               child: _ActionButton(
                 label: 'Add Member',
                 icon: Icons.person_add,
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const AddMemberDialog(),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -104,7 +116,12 @@ class HomeScreen extends StatelessWidget {
               child: _ActionButton(
                 label: 'Record Payment',
                 icon: Icons.payment,
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const RecordPaymentDialog(),
+                  );
+                },
               ),
             ),
           ],
