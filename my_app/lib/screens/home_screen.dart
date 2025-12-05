@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import '../providers/loan_provider.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -9,9 +14,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {
-              // Settings navigation
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -26,11 +29,11 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSummaryCards(provider),
+                _buildSummaryCards(provider, context),
                 const SizedBox(height: 24),
                 _buildQuickActions(context),
                 const SizedBox(height: 24),
-                _buildRecentActivity(provider),
+                _buildRecentActivity(provider, context),
               ],
             ),
           );
@@ -39,7 +42,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCards(LoanProvider provider) {
+  Widget _buildSummaryCards(LoanProvider provider, BuildContext context) {
     final currencyFormat = NumberFormat.currency(symbol: '₱');
     
     return GridView.count(
@@ -93,9 +96,7 @@ class HomeScreen extends StatelessWidget {
               child: _ActionButton(
                 label: 'Add Member',
                 icon: Icons.person_add,
-                onPressed: () {
-                  // Navigate to add member
-                },
+                onPressed: () {},
               ),
             ),
             const SizedBox(width: 12),
@@ -103,9 +104,7 @@ class HomeScreen extends StatelessWidget {
               child: _ActionButton(
                 label: 'Record Payment',
                 icon: Icons.payment,
-                onPressed: () {
-                  // Navigate to record payment
-                },
+                onPressed: () {},
               ),
             ),
           ],
@@ -114,7 +113,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecentActivity(LoanProvider provider) {
+  Widget _buildRecentActivity(LoanProvider provider, BuildContext context) {
     final recentPayments = provider.payments.take(5).toList();
 
     return Column(
@@ -125,33 +124,36 @@ class HomeScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 12),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: recentPayments.length,
-          itemBuilder: (context, index) {
-            final payment = recentPayments[index];
-            final member = provider.members
-                .firstWhere((m) => m.id == payment.memberId);
-            
-            return ListTile(
-              leading: CircleAvatar(
-                child: Text(member.name[0]),
-              ),
-              title: Text(member.name),
-              subtitle: Text(
-                DateFormat('MMM dd, yyyy').format(payment.paymentDate),
-              ),
-              trailing: Text(
-                NumberFormat.currency(symbol: '₱').format(payment.amount),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
+        if (recentPayments.isEmpty)
+          const Center(child: Text('No recent activity'))
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: recentPayments.length,
+            itemBuilder: (context, index) {
+              final payment = recentPayments[index];
+              final member = provider.members
+                  .firstWhere((m) => m.id == payment.memberId);
+              
+              return ListTile(
+                leading: CircleAvatar(
+                  child: Text(member.name[0]),
                 ),
-              ),
-            );
-          },
-        ),
+                title: Text(member.name),
+                subtitle: Text(
+                  DateFormat('MMM dd, yyyy').format(payment.paymentDate),
+                ),
+                trailing: Text(
+                  NumberFormat.currency(symbol: '₱').format(payment.amount),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+              );
+            },
+          ),
       ],
     );
   }

@@ -1,3 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import '../providers/loan_provider.dart';
+import '../models/member.dart';
+
 class MembersScreen extends StatelessWidget {
   const MembersScreen({super.key});
 
@@ -9,9 +15,7 @@ class MembersScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {
-              // Implement search
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -37,9 +41,7 @@ class MembersScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate to add member screen
-        },
+        onPressed: () {},
         child: const Icon(Icons.add),
       ),
     );
@@ -82,9 +84,7 @@ class _MemberListTile extends StatelessWidget {
           label: Text(member.status),
           backgroundColor: _getStatusColor(member.status).withOpacity(0.2),
         ),
-        onTap: () {
-          // Navigate to member detail screen
-        },
+        onTap: () {},
       ),
     );
   }

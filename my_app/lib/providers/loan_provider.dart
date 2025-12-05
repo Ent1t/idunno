@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import '../models/member.dart';
+import '../models/payment.dart';
+import '../services/database_service.dart';
 
 class LoanProvider extends ChangeNotifier {
   List<Member> _members = [];
@@ -42,7 +45,6 @@ class LoanProvider extends ChangeNotifier {
   Future<void> recordPayment(Payment payment) async {
     await DatabaseService.instance.insertPayment(payment);
     
-    // Update member's total paid
     final member = await DatabaseService.instance.getMember(payment.memberId);
     if (member != null) {
       final updatedMember = member.copyWith(

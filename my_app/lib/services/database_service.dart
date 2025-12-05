@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../models/member.dart';
+import '../models/payment.dart';
 
 class DatabaseService {
   static final DatabaseService instance = DatabaseService._init();

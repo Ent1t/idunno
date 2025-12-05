@@ -9,7 +9,7 @@ class Member {
   final int loanTermMonths;
   final double totalPayoutAmount;
   final DateTime startDate;
-  final String status; // Active, Completed, Defaulted
+  final String status;
   final double totalPaid;
 
   Member({

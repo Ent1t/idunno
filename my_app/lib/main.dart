@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'screens/home_screen.dart';
 import 'screens/members_screen.dart';
 import 'screens/calendar_screen.dart';

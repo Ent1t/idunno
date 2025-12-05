@@ -1,4 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+import '../providers/loan_provider.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -8,7 +12,7 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
-  int _selectedPeriod = 0; // 0: Daily, 1: Weekly, 2: Monthly, 3: Yearly
+  int _selectedPeriod = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +128,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   List<FlSpot> _generateChartData(LoanProvider provider) {
-    // Sample data - implement actual calculation based on period
     return List.generate(7, (i) => FlSpot(i.toDouble(), (i * 1000).toDouble()));
   }
 }
