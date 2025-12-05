@@ -3,9 +3,18 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/loan_provider.dart';
 import '../models/member.dart';
+import 'add_member_dialog.dart';
+import 'member_detail_screen.dart';
 
-class MembersScreen extends StatelessWidget {
+class MembersScreen extends StatefulWidget {
   const MembersScreen({super.key});
+
+  @override
+  State<MembersScreen> createState() => _MembersScreenState();
+}
+
+class _MembersScreenState extends State<MembersScreen> {
+  final String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +24,12 @@ class MembersScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {},
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: MemberSearchDelegate(),
+              );
+            },
           ),
         ],
       ),
@@ -41,7 +55,12 @@ class MembersScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => const AddMemberDialog(),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );
@@ -73,7 +92,9 @@ class _MemberListTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('${member.monthsPaid}/${member.loanTermMonths} months'),
+            const SizedBox(height: 4),
             LinearProgressIndicator(value: progress),
+            const SizedBox(height: 4),
             Text(
               'Balance: ${currencyFormat.format(member.remainingBalance)}',
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -84,7 +105,14 @@ class _MemberListTile extends StatelessWidget {
           label: Text(member.status),
           backgroundColor: _getStatusColor(member.status).withOpacity(0.2),
         ),
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MemberDetailScreen(member: member),
+            ),
+          );
+        },
       ),
     );
   }
@@ -100,5 +128,75 @@ class _MemberListTile extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+}
+
+class MemberSearchDelegate extends SearchDelegate<Member?> {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return _buildSearchResults(context);
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return _buildSearchResults(context);
+  }
+
+  Widget _buildSearchResults(BuildContext context) {
+    return Consumer<LoanProvider>(
+      builder: (context, provider, child) {
+        final results = provider.members.where((member) {
+          return member.name.toLowerCase().contains(query.toLowerCase()) ||
+              member.contact.toLowerCase().contains(query.toLowerCase());
+        }).toList();
+
+        if (results.isEmpty) {
+          return const Center(child: Text('No members found'));
+        }
+
+        return ListView.builder(
+          itemCount: results.length,
+          itemBuilder: (context, index) {
+            final member = results[index];
+            return ListTile(
+              leading: CircleAvatar(child: Text(member.name[0])),
+              title: Text(member.name),
+              subtitle: Text(member.contact),
+              onTap: () {
+                close(context, member);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MemberDetailScreen(member: member),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 }
